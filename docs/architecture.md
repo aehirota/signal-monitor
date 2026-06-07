@@ -14,52 +14,37 @@ with a hint to use the fallback source. Survivors hit a SQLite-backed
 identity-key deduper. What's new + still inside its recency window goes
 into the weekly digest.
 
+```mermaid
+flowchart TD
+    START([ENTRY]) --> LOADER[loader<br/><i>watchlist + recency windows<br/>+ SQLite dedup state</i>]
+    LOADER --> PRODUCERS
+
+    subgraph PRODUCERS["6 producers — parallel super-step (merge_signals reducer)"]
+        direction LR
+        P1[funding_round<br/><i>Exa</i>]
+        P2[exec_move<br/><i>Exa</i>]
+        P3[relevant_jd<br/><i>Tavily</i>]
+        P4[product_launch<br/><i>Perplexity</i>]
+        P5[tech_signal<br/><i>Exa</i>]
+        P6[news_strategic<br/><i>Perplexity</i>]
+    end
+
+    PRODUCERS --> CRITIC[<b>critic</b><br/><i>code-enforced evidence_traceable<br/>+ recency · type_match · actionability</i>]
+    CRITIC --> ORCH{orchestrator<br/><i>Command goto</i>}
+    ORCH -->|gaps remain<br/>iter < max_retries<br/>Send w/ fallback hint| PRODUCERS
+    ORCH -->|done| DEDUP[<b>deduper</b><br/><i>identity_key vs SQLite<br/>per-type recency window</i>]
+    DEDUP --> COMPILE[digest_compiler<br/><i>+ Resend email</i>]
+    COMPILE --> END([EXIT])
+
+    classDef clamp fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#000
+    classDef gate fill:#dbeafe,stroke:#1e40af,stroke-width:2px,color:#000
+    classDef edge fill:#f3f4f6,stroke:#374151,color:#000
+    class CRITIC,DEDUP clamp
+    class ORCH gate
+    class LOADER,COMPILE edge
 ```
-                       ENTRY
-                         │
-                    ┌────▼────┐
-                    │ loader  │  watchlist + dedup state + recency windows
-                    └────┬────┘
-                         │
-        ┌──────────┬─────┴─────┬──────────┐
-        ▼          ▼           ▼          ▼          ▼          ▼
-  funding_round exec_move  relevant_jd product_launch tech_signal news_strategic
-   (Exa)        (Exa)       (Tavily)    (Perplexity)  (Exa)      (Perplexity)
-        │          │           │          │           │           │
-        └──────────┴─────┬─────┴──────────┴───────────┴───────────┘
-                         │  merge_signals reducer
-                    ┌────▼────┐
-                    │ critic  │  evidence_traceable (code) + 3 LLM dims
-                    └────┬────┘
-                         │
-              ┌──────────┴───────────┐
-              ▼                      ▼
-         gaps exist               no gaps
-         iteration < max          (or iteration == max)
-              │                      │
-       ┌──────▼───────┐               │
-       │ orchestrator │               │
-       │   Send(...)  │               │
-       └──────┬───────┘               │
-              │ re-fire specific      │
-              │ producer w/ fallback  │
-              ▼                      │
-       (back to producer)            │
-              │                      │
-              ▼                      │
-            critic ─────► ... ─────► │
-                                     ▼
-                              ┌─────────────┐
-                              │   deduper   │  identity_key against SQLite
-                              └──────┬──────┘
-                                     │
-                              ┌──────▼───────┐
-                              │ digest_compiler │
-                              └──────┬───────┘
-                                     │
-                                     ▼
-                                    EXIT
-```
+
+**Reading the diagram.** Yellow nodes (`critic`, `deduper`) carry the code-enforced clamps — the verbatim quote check and the identity-key dedup. The blue diamond (`orchestrator`) is the routing decision: gaps + iteration budget → selective re-fire; otherwise straight to the deduper. The subgraph anchors the parallel super-step; all six producers fire concurrently and their writes merge via `merge_signals`.
 
 ## State
 
