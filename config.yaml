@@ -1,0 +1,70 @@
+# Signal Monitor configuration
+# All architectural constants live here. Edit with intent.
+
+# ─── Runtime ──────────────────────────────────────────────
+runtime:
+  cadence: weekly
+  day_of_week: saturday        # informational; launchd plist is the source of truth
+  hour_local: 7
+  timezone: America/Sao_Paulo
+
+# ─── Cost discipline (code-enforced) ──────────────────────
+budget:
+  per_run_cap_usd: 4.00
+  per_company_soft_cap_usd: 0.25
+  # Auto-pause if N consecutive runs hit the per-run cap
+  auto_pause_after_cap_hits: 2
+
+# ─── Models (v1.0.1 — ratcheted producers to Haiku on Day-5 live test) ──
+# Live test against retool.com on Day 5 hit Anthropic Tier 1 rate limit
+# (30k input tokens/min) during the parallel producer super-step. Producers
+# are mechanical extraction; the reasoning happened upstream in the source.
+# Haiku 4.5 is the right call. See MODEL_NOTES.md for the ratchet protocol.
+models:
+  producer: claude-haiku-4-5-20251001       # downgraded 2026-06-06 (rate limit)
+  critic: claude-sonnet-4-6                  # stays Sonnet (reasoning, sequential)
+  orchestrator: claude-haiku-4-5-20251001   # downgraded 2026-06-06 (mechanical)
+  digest_compiler: claude-sonnet-4-6         # stays Sonnet (user-facing reasoning)
+
+# ─── Critic thresholds (hard gates) ───────────────────────
+critic:
+  min_per_dimension: 7          # all 4 dims must score >= 7
+  min_evidence_traceable: 10    # code-enforced clamp; only 0 or 10
+  max_retries_per_type: 1       # critic-driven re-fire ceiling
+
+# ─── Signal types & recency windows ───────────────────────
+signal_types:
+  funding_round:
+    recency_days: 120
+    primary_source: exa
+  exec_move:
+    recency_days: 90
+    primary_source: exa
+  relevant_jd:
+    recency_days: 45
+    primary_source: tavily
+  product_launch:
+    recency_days: 60
+    primary_source: perplexity
+  tech_signal:
+    recency_days: 30
+    primary_source: exa
+  news_strategic:
+    recency_days: 60
+    primary_source: perplexity
+
+# Universal fallback (used when critic re-fires a failed type)
+fallback_source: anthropic_web_search
+
+# ─── Storage ──────────────────────────────────────────────
+storage:
+  sqlite_path: .tmp/signals.sqlite
+
+# ─── Logging ──────────────────────────────────────────────
+logging:
+  runs_dir: .tmp/runs           # per-run timestamped directories
+  retain_runs: 90               # days
+
+# ─── Watchlist ────────────────────────────────────────────
+watchlist:
+  path: watchlist.yaml

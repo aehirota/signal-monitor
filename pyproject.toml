@@ -1,0 +1,31 @@
+[project]
+name = "signal-monitor"
+version = "0.1.0"
+description = "LangGraph agent that watches a company list for typed buying-window signals and emails a weekly digest."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "Anderson Hirota" }]
+keywords = ["langgraph", "anthropic", "claude", "gtm", "sales", "agents", "monitoring"]
+
+dependencies = [
+    "langgraph==0.2.61",
+    "anthropic==0.42.0",
+    "pydantic==2.10.4",
+    "python-dotenv==1.0.1",
+    "pyyaml==6.0.2",
+    "httpx==0.28.1",
+    "beautifulsoup4==4.12.3",
+    "resend==2.4.0",
+    "exa-py==1.7.0",
+    "tavily-python==0.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["evals", "tests"]

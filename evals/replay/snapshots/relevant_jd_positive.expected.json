@@ -1,0 +1,10 @@
+{
+  "fixture": "relevant_jd_positive.html",
+  "kind": "evidence_check_positive",
+  "evidence_quote": "We are looking for a Senior GTM Engineer to architect the systems",
+  "expected": {
+    "score": 10,
+    "reason_contains": "quote found"
+  },
+  "notes": "Greenhouse-style JD; verbatim quote in body."
+}

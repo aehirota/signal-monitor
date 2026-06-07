@@ -1,0 +1,10 @@
+{
+  "fixture": "exec_move_positive.html",
+  "kind": "evidence_check_positive",
+  "evidence_quote": "Jane Grosser will join the company as Chief Operating Officer",
+  "expected": {
+    "score": 10,
+    "reason_contains": "quote found"
+  },
+  "notes": "Exec-move announcement; verbatim quote in body."
+}

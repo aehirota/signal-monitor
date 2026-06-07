@@ -1,0 +1,10 @@
+{
+  "fixture": "funding_round_positive.html",
+  "kind": "evidence_check_positive",
+  "evidence_quote": "Retool today announced its $45 million Series C round led by Sequoia Capital",
+  "expected": {
+    "score": 10,
+    "reason_contains": "quote found"
+  },
+  "notes": "Real funding-announcement-style page; verbatim quote present in body."
+}

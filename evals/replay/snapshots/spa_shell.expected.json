@@ -1,0 +1,10 @@
+{
+  "fixture": "spa_shell.html",
+  "kind": "evidence_check_spa_shell",
+  "evidence_quote": "Retool today announced its $45 million Series C round led by Sequoia Capital",
+  "expected": {
+    "score": 0,
+    "reason_contains": "shorter"
+  },
+  "notes": "JS-rendered SPA shell — the fetcher gets an empty body. Treated as unverifiable (score 0). Intentional: we do not run a headless browser; pages that need JS get clamp-rejected. This case will produce some false negatives in production but the conservatism is the right v1 trade-off."
+}

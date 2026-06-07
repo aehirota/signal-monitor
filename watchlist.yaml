@@ -1,0 +1,26 @@
+# Companies to monitor for weekly buying-window signals.
+# Required: domain
+# Optional: priority (high | normal | low), notes, mute_types
+
+companies:
+  # ─── Seed: replace with your Phase A targets ─────────────
+  - domain: vercel.com
+    priority: high
+    notes: "Anthropic-aligned, agentic GTM posture, new COO building GTM Eng"
+
+  - domain: retool.com
+    priority: high
+    notes: "Series C, Krangel = Head of RevOps (ARA brief), open GTM Eng req"
+
+  - domain: anthropic.com
+    priority: normal
+    notes: "frontier lab; signals double as ecosystem intel"
+    mute_types: [news_strategic]   # too saturated; only hard signals
+
+  - domain: clay.com
+    priority: normal
+    notes: "ecosystem; competitive intel"
+
+  - domain: apollo.io
+    priority: normal
+    notes: "ecosystem; competitive intel"

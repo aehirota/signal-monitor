@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.aehirota.signal-monitor</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__PROJECT_DIR__/scripts/run-with-env.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__PROJECT_DIR__</string>
+
+    <!-- Saturday (1=Mon ... 7=Sun in launchd; 6=Sat) at 07:00 local. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>6</integer>
+        <key>Hour</key>
+        <integer>7</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__PROJECT_DIR__/.tmp/launchd-stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__PROJECT_DIR__/.tmp/launchd-stderr.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- Don't keep alive; this is a one-shot weekly job. -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>

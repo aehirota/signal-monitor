@@ -1,0 +1,10 @@
+{
+  "fixture": "funding_round_positive.html",
+  "kind": "evidence_check_hallucinated",
+  "evidence_quote": "Retool today announced its $200 million Series D round led by Andreessen Horowitz",
+  "expected": {
+    "score": 0,
+    "reason_contains": "not found"
+  },
+  "notes": "Same HTML as the positive fixture; fabricated quote (wrong amount, wrong round, wrong lead). This is THE most important eval case in the entire system: it proves the evidence_traceable clamp clamps hallucinated quotes attributed to real URLs. If this regresses, the architectural commitment is broken."
+}
