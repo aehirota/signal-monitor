@@ -153,18 +153,26 @@ python run.py
 
 A first run hits the configured email. See [`docs/architecture.md`](docs/architecture.md) for the full state-machine walkthrough.
 
-## Companion to Account Research Agent
+## Part of the pre-outbound stack
 
-[account-research-agent](https://github.com/aehirota/account-research-agent) decides **who fits and why** (one-time per company).
-**Signal Monitor decides when to act on the fit you already validated** (weekly per company).
+This is the second repo in a three-stage agentic pre-outbound system. Each repo runs standalone; together they compose end-to-end.
 
-Together they form a two-stage GTM pre-outbound layer:
+| Repo | Answers | Output contract |
+|---|---|---|
+| [account-research-agent](https://github.com/aehirota/account-research-agent) | Who fits | JSON via `python run.py <domain> --json` |
+| **signal-monitor** (this repo) | When to act | JSON via `python run.py --only <domain> --json` |
+| [meeting-prep-agent](https://github.com/aehirota/meeting-prep-agent) | What to say | Markdown + JSON sidecar via `python run.py <input.yaml>` |
 
-- Run Account Research Agent against a target domain → get an ICP-fit brief
-- If `recommendation = Pursue`, add the domain to Signal Monitor's `watchlist.yaml`
-- Every Saturday you see what's happening at the companies you decided to pursue
+Three MIT repos. Three architecturally-coherent state machines. One thesis: **code-enforced rules over prompt-asked-nicely rules**, critic-driven self-correction, modular composition through stable CLI contracts. Same pattern shows up five times across the trilogy: disqualifier clamp (ARA) → length compliance (sister project, the blog autopilot) → three clamps (here) → concurrency clamp in this runtime → four clamps + sequential composition in MPA.
 
-The two tools are **modular, not coupled** — Signal Monitor works without Account Research Agent. The composition is the architecture; the coupling is optional.
+Composition flow:
+
+1. Run Account Research Agent against a target domain → get an ICP-fit brief
+2. If `recommendation = Pursue`, add the domain to Signal Monitor's `watchlist.yaml`
+3. Every Saturday you see what's happening at the companies you decided to pursue
+4. When a meeting gets booked, Meeting Prep Agent composes ARA + SM into a 1-page pre-meeting brief with four code-enforced clamps
+
+The three tools are **modular, not coupled** — Signal Monitor works without ARA or MPA; ARA works without SM; MPA pins to specific sibling tags and refuses to proceed if a sibling returns a schema_version it wasn't built against. The composition is the architecture; the coupling is optional.
 
 ## License
 
